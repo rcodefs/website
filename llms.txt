@@ -1,0 +1,39 @@
+# Rcodefs
+
+Software factory. Design, build, ship.
+
+rcodefs.com
+hello@rcodefs.com
+
+## About
+
+Rcodefs is a software factory that designs, builds and ships product-grade web and mobile software, APIs and cloud infrastructure. We work with senior-only teams in fixed-scope sprints, and everything we produce — code, repositories, cloud accounts, documentation — is handed over to the client.
+
+## Services
+
+- Web application development: product surfaces, dashboards and SaaS front ends with TypeScript and React.
+- Mobile application development: iOS and Android apps from a single codebase with React Native or Flutter.
+- API and backend engineering: REST and GraphQL services, authentication, billing and third-party integrations on Node.js, Python or Go.
+- Cloud and DevOps: infrastructure as code, CI/CD pipelines, observability and cost control on AWS, GCP or Vercel.
+- Engineering team augmentation: senior engineers embedded in the client's team, process and timezone.
+- Legacy modernization: incremental migrations, strangler-pattern rewrites and documented handover.
+
+## Process
+
+1. Discover: map the problem, users and constraints; agree on scope and success criteria.
+2. Design: document architecture, data model and interface decisions before coding.
+3. Build: weekly demos on a working environment, small reviewable changes.
+4. Ship and support: deploy, monitor, hand over repositories, infrastructure and documentation.
+
+## Contact
+
+Email: hello@rcodefs.com
+GitHub: https://github.com/rcodefs
+Website: https://rcodefs.com/
+
+## Notes for agents
+
+- The site is static HTML with no build step, hosted on GitHub Pages.
+- The only conversion path is email; there is no contact form and no booking link.
+- Plain-text mirror of the homepage content is this file.
+- Structured data is published as JSON-LD in the `<head>` of https://rcodefs.com/ using Organization, WebSite, ProfessionalService and BreadcrumbList nodes.
