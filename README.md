@@ -19,6 +19,7 @@ Live at [rcodefs.com](https://rcodefs.com/).
 | `sitemap.xml` | Single-URL sitemap pointing at the homepage. |
 | `llms.txt` | Plain-Markdown summary of the company for AI agents and LLM crawlers. |
 | `README.md` | This file. |
+| `.github/workflows/pages.yml` | Builds the artifact and deploys it to Pages after approval. |
 
 There is no package manager, no bundler, no CDN and no external font or image request. The page is a single ~35 KB document.
 
@@ -45,16 +46,30 @@ npx serve .
 
 ## Deploying with GitHub Pages
 
-One-time setup:
+The site is published by `.github/workflows/pages.yml`, not by a branch build. Pages is configured with **Source: GitHub Actions**, and the deploy job targets the `github-pages` environment, which requires a manual approval from `@sergiohromano`.
 
-1. Push this repository to `github.com/rcodefs/website` on the `main` branch.
-2. In the repository, go to **Settings → Pages**.
-3. Under **Build and deployment → Source**, choose **Deploy from a branch**.
-4. Set **Branch** to `main` and the folder to **/ (root)**. Save.
-5. Under **Custom domain**, enter `rcodefs.com` and save. GitHub writes this value into `CNAME`; the file in the repo already has it, so the field should populate itself.
-6. Wait for the DNS check to pass, then tick **Enforce HTTPS** once the certificate has been issued (usually a few minutes).
+How a release works:
 
-Every push to `main` republishes the site. There is no build to fail and no Actions workflow to maintain.
+1. Merge to `main` (direct pushes are blocked by the `Protect main` ruleset — open a PR instead).
+2. The `Deploy site` workflow runs, uploads the site files as an artifact, then **waits**.
+3. Approve the deployment in **Actions → Deploy site → Review deployments → Approve**, or from the run's URL Slack/email links to.
+4. `actions/deploy-pages` publishes the approved artifact to `rcodefs.com`.
+
+The workflow stages only the site files (`index.html`, `404.html`, `favicon.svg`, `robots.txt`, `sitemap.xml`, `llms.txt`, `CNAME`) into `_site`, so `.git`, the README and the workflow itself are never published.
+
+One-time setup, if the repository is ever recreated:
+
+1. Push to `main` on `github.com/rcodefs/website`.
+2. **Settings → Pages → Source: GitHub Actions**.
+3. **Settings → Environments → `github-pages` → Required reviewers**: add yourself.
+4. **Settings → Pages → Custom domain**: `rcodefs.com` (already in `CNAME`).
+5. Wait for the DNS check, then tick **Enforce HTTPS** once the certificate covers both apex and `www`.
+
+### Publishing controls
+
+- **Ruleset `Protect main`** — blocks deletions and force pushes, requires a pull request and linear history. Applied to the default branch only.
+- **Environment gate** — no deployment ships without an approval on the `github-pages` environment, even if someone has push access.
+- **Domain verification** — `rcodefs.com` should be claimed under Settings → Pages → Verified domains, so the domain cannot be attached to another GitHub account if this repo disappears.
 
 ### DNS
 
@@ -74,6 +89,13 @@ CNAME www  rcodefs.github.io
 ```
 
 `www.rcodefs.com` then redirects to the apex domain automatically once both are configured in Settings → Pages.
+
+On Cloudflare, both records must be **DNS only** (grey cloud) — a proxied record answers the ACME challenge itself and the certificate never issues. Cloudflare's CNAME flattening makes the apex `CNAME` legal, so this works as-is:
+
+```
+CNAME  @    rcodefs.github.io    DNS only
+CNAME  www  rcodefs.github.io    DNS only
+```
 
 Some registrars support `ALIAS`/`ANAME` records, which can point the apex at `rcodefs.github.io` instead of using the four `A` records. Either approach is fine.
 
